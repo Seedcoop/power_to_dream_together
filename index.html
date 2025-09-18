@@ -83,37 +83,33 @@
           <button id="showTrendLineBtn" class="btn btn-disabled btn-full" onclick="toggleTrendLine()" disabled>그래프 그리기</button>
           <button id="predictModeBtn" class="btn btn-disabled btn-full" onclick="togglePredictMode()" disabled>원하는 값 구하기</button>
           <button class="btn btn-ghost btn-full" onclick="clearAll()">전체 지우기</button>
-<script>
-  function clearAll(){
-    // 5칸 빈 입력으로 초기화
-    points = [
-      {id:1,x:'',y:''},
-      {id:2,x:'',y:''},
-      {id:3,x:'',y:''},
-      {id:4,x:'',y:''},
-      {id:5,x:'',y:''}
-    ];
-    show = false;   // 점 숨김
-    line = false;   // 선 숨김
-    pred = null;    // 예측 초기화
+          function clearAll(){
+  // 5칸 빈 입력으로 초기화
+  points = [
+    {id:1,x:'',y:''},
+    {id:2,x:'',y:''},
+    {id:3,x:'',y:''},
+    {id:4,x:'',y:''},
+    {id:5,x:'',y:''}
+  ];
 
-    // 예측 UI/결과 숨기기(있을 경우)
-    var predictSection = document.getElementById('predictSection');
-    if (predictSection) predictSection.classList.add('hidden');
-    var predictBox = document.getElementById('predictBox');
-    if (predictBox) predictBox.style.display = 'none';
-    var predictResult = document.getElementById('predictResult');
-    if (predictResult) { predictResult.textContent = ''; predictResult.classList.add('hidden'); predictResult.style.display='none'; }
+  // 상태 리셋 (이름 주의!)
+  showPoints = false;
+  showTrendLine = false;
+  predictMode = false;
+  predictResult = null;
 
-    // 각 버전의 렌더/버튼/그래프 갱신 함수 호출 (있는 것만 호출)
-    if (typeof renderRows === 'function') renderRows();
-    if (typeof render === 'function') render();
-    if (typeof setBtnStates === 'function') setBtnStates();
-    if (typeof updateButtons === 'function') updateButtons();
-    if (typeof draw === 'function') draw();
-    if (typeof updateGraph === 'function') updateGraph();
-  }
-</script>
+  // 예측 UI/결과 숨기기
+  const sec = document.getElementById('predictSection');
+  if (sec) sec.classList.add('hidden');
+  const res = document.getElementById('predictResult');
+  if (res) { res.textContent = ''; res.classList.add('hidden'); }
+
+  // UI 재렌더
+  renderPointInputs();
+  updateButtons();
+  updateGraph();
+}
         </div>
 
         <!-- 예측 입력 -->
