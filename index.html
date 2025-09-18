@@ -77,40 +77,13 @@
           <button class="btn btn-blue" onclick="addPoint()"><span>➕</span><span>좌표 추가</span></button>
         </div>
 
-        <!-- 컨트롤 버튼 -->
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <button id="showPointsBtn" class="btn btn-gray btn-full" onclick="toggleShowPoints()">값 표시하기</button>
-          <button id="showTrendLineBtn" class="btn btn-disabled btn-full" onclick="toggleTrendLine()" disabled>그래프 그리기</button>
-          <button id="predictModeBtn" class="btn btn-disabled btn-full" onclick="togglePredictMode()" disabled>원하는 값 구하기</button>
-          <button class="btn btn-ghost btn-full" onclick="clearAll()">전체 지우기</button>
-          function clearAll(){
-  // 5칸 빈 입력으로 초기화
-  points = [
-    {id:1,x:'',y:''},
-    {id:2,x:'',y:''},
-    {id:3,x:'',y:''},
-    {id:4,x:'',y:''},
-    {id:5,x:'',y:''}
-  ];
-
-  // 상태 리셋 (이름 주의!)
-  showPoints = false;
-  showTrendLine = false;
-  predictMode = false;
-  predictResult = null;
-
-  // 예측 UI/결과 숨기기
-  const sec = document.getElementById('predictSection');
-  if (sec) sec.classList.add('hidden');
-  const res = document.getElementById('predictResult');
-  if (res) { res.textContent = ''; res.classList.add('hidden'); }
-
-  // UI 재렌더
-  renderPointInputs();
-  updateButtons();
-  updateGraph();
-}
-        </div>
+      <!-- 컨트롤 버튼 -->
+<div style="display:flex;flex-direction:column;gap:12px;">
+  <button id="showPointsBtn" class="btn btn-gray btn-full" onclick="toggleShowPoints()">값 표시하기</button>
+  <button id="showTrendLineBtn" class="btn btn-disabled btn-full" onclick="toggleTrendLine()" disabled>그래프 그리기</button>
+  <button id="predictModeBtn" class="btn btn-disabled btn-full" onclick="togglePredictMode()" disabled>원하는 값 구하기</button>
+  <button class="btn btn-gray btn-full" onclick="clearAll()">전체 지우기</button>
+</div>
 
         <!-- 예측 입력 -->
         <div id="predictSection" class="predict-section hidden">
@@ -161,7 +134,11 @@
   ];
   let showPoints=false, showTrendLine=false, predictMode=false, predictResult=null;
 
-  document.addEventListener('DOMContentLoaded', renderPointInputs);
+  document.addEventListener('DOMContentLoaded', () => {
+  renderPointInputs();
+  updateButtons();   // ← 초기 버튼 상태 반영
+  updateGraph();     // ← 초기 그래프(빈 상태) 반영
+});
 
   // ===== 입력 렌더 =====
   function renderPointInputs(){
@@ -385,6 +362,34 @@
       svg.appendChild(el);
     }
   }
+  // ===== 전체 지우기 =====
+function clearAll(){
+  // 5칸 빈 입력으로 초기화
+  points = [
+    {id:1,x:'',y:''},
+    {id:2,x:'',y:''},
+    {id:3,x:'',y:''},
+    {id:4,x:'',y:''},
+    {id:5,x:'',y:''}
+  ];
+
+  // 상태 리셋
+  showPoints = false;
+  showTrendLine = false;
+  predictMode = false;
+  predictResult = null;
+
+  // 예측 UI/결과 숨기기
+  const sec = document.getElementById('predictSection');
+  if (sec) sec.classList.add('hidden');
+  const res = document.getElementById('predictResult');
+  if (res) { res.textContent = ''; res.classList.add('hidden'); }
+
+  // UI 재렌더
+  renderPointInputs();
+  updateButtons();
+  updateGraph();
+}
 </script>
 </body>
 </html>
