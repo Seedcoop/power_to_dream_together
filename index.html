@@ -1,125 +1,362 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>좌표 그래프 계산기 (중등용)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>한국전력기술원 미래과학교실 Power to Dream Together</title>
 <style>
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,sans-serif;background:#f9fafb;color:#111;margin:0}
-  .container{max-width:1200px;margin:0 auto;padding:20px}
-  h1{text-align:center;font-size:28px;font-weight:800;margin-bottom:20px}
-  .grid{display:grid;gap:20px;grid-template-columns:1fr}
-  @media(min-width:1000px){.grid{grid-template-columns:380px 1fr}}
-  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px}
-  .btn{padding:10px;border:0;border-radius:10px;font-weight:700;cursor:pointer;margin-top:6px}
-  .blue{background:#2563eb;color:#fff}
-  .gray{background:#e5e7eb}
-  .red{background:#dc2626;color:#fff}
-  .green{background:#16a34a;color:#fff}
-  .ghost{background:#eef2ff;color:#3730a3}
-  input[type=number]{width:80px;padding:6px;border:1px solid #d1d5db;border-radius:6px}
-  .row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
-  .trash{background:none;border:0;cursor:pointer;color:#dc2626;font-size:18px}
-  .empty{display:flex;align-items:center;justify-content:center;height:360px;border:2px dashed #d1d5db;border-radius:12px;color:#6b7280}
-  .svg{background:#fff;border:1px solid #d1d5db;border-radius:12px}
-  .legend{display:flex;gap:14px;justify-content:center;margin-top:8px;font-size:14px}
-  .dot{width:14px;height:14px;border-radius:50%}
-  .line{width:20px;height:4px}
+  :root{
+    --blue:#2563eb; --blue-100:#dbeafe; --blue-200:#bfdbfe;
+    --red:#dc2626;  --green:#16a34a;   --purple:#7c3aed;
+    --gray-50:#f9fafb; --gray-100:#f3f4f6; --gray-200:#e5e7eb; --gray-300:#d1d5db; --gray-700:#374151; --gray-800:#1f2937;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Malgun Gothic,sans-serif;background:var(--gray-50);color:#333;line-height:1.6}
+  .container{max-width:1400px;margin:0 auto;padding:24px;background:#fff}
+  h1{text-align:center;font-size:2rem;font-weight:800;margin-bottom:2rem;color:var(--gray-800)}
+  .grid{display:grid;gap:2rem;grid-template-columns:1fr}
+  @media (min-width:1024px){.grid{grid-template-columns:1fr 1fr}}
+  .input-section{display:flex;flex-direction:column;gap:1.5rem}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  h2{font-size:1.25rem;font-weight:700;color:var(--gray-800)}
+
+  /* 버튼 */
+  .btn{padding:9px 12px;border:0;border-radius:10px;cursor:pointer;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .btn-full{width:100%;justify-content:center}
+  .btn-purple{background:#efe9ff;color:var(--purple)} .btn-purple:hover{background:#e7defe}
+  .btn-blue{background:var(--blue-100);color:var(--blue)} .btn-blue:hover{background:var(--blue-200)}
+  .btn-primary{background:var(--blue);color:#fff} .btn-primary:hover{filter:brightness(0.95)}
+  .btn-red{background:var(--red);color:#fff} .btn-red:hover{filter:brightness(0.95)}
+  .btn-green{background:var(--green);color:#fff} .btn-green:hover{filter:brightness(0.95)}
+  .btn-gray{background:var(--gray-200);color:var(--gray-700)} .btn-gray:hover{background:var(--gray-300)}
+  .btn-disabled{background:var(--gray-100);color:#9ca3af;cursor:not-allowed}
+
+  /* 입력 렌더 */
+  .point-input{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .point-number{width:32px;font-size:.875rem;color:#6b7280}
+  input[type="number"]{width:90px;padding:6px 8px;border:1px solid var(--gray-300);border-radius:8px;font-size:.9rem}
+  input[type="number"]:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+  .delete-btn{padding:4px;background:none;border:none;color:var(--red);cursor:pointer;border-radius:6px}
+  .delete-btn:hover{background:#fef2f2}
+
+  /* 그래프 영역 */
+  .graph-section{display:flex;flex-direction:column;align-items:center}
+  .graph-container{display:flex;justify-content:center;margin-bottom:1rem}
+  .empty-graph{display:flex;align-items:center;justify-content:center;width:600px;height:450px;background:var(--gray-50);
+               border:2px dashed var(--gray-300);border-radius:12px;text-align:center;color:#6b7280}
+  .svg-graph{max-width:600px;border:1px solid var(--gray-300);border-radius:12px;background:#fff}
+  .legend{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;font-size:.9rem}
+  .legend-item{display:flex;align-items:center;gap:.5rem}
+  .legend-dot{width:16px;height:16px;border-radius:50%}
+  .legend-line{width:20px;height:4px;border-radius:2px}
+
+  .predict-section{border-top:1px solid var(--gray-200);padding-top:1rem;margin-top:1rem}
+  .radio-group{display:flex;gap:1rem;margin-bottom:.5rem}
+  .radio-item{display:flex;align-items:center;gap:.5rem}
+  .predict-input-group{display:flex;gap:.5rem}
+  .predict-input{flex:1;padding:8px 12px;border:1px solid var(--gray-300);border-radius:8px}
+  .result-box{padding:12px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;color:#0e7490;margin-top:.5rem;font-weight:800}
+  .hidden{display:none}
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>좌표 그래프 계산기</h1>
-  <div class="grid">
-    <!-- 입력 -->
-    <div class="card">
-      <h2>좌표 입력</h2>
-      <div id="rows"></div>
-      <button class="btn ghost" onclick="addRow()">➕ 좌표 추가</button>
-      <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-        <button id="showBtn" class="btn gray" onclick="togglePoints()">📊 값 표시하기</button>
-        <button id="lineBtn" class="btn gray" onclick="toggleLine()" disabled>📈 그래프 그리기</button>
-        <button id="predictBtn" class="btn gray" onclick="togglePredict()" disabled>🔮 원하는 값 구하기</button>
-      </div>
-      <div id="predictBox" style="display:none;margin-top:12px">
-        <input type="number" id="predictX" placeholder="X 입력">
-        <button class="btn green" onclick="predict()">계산</button>
-        <div id="predictResult" style="margin-top:8px;font-weight:700"></div>
-      </div>
-    </div>
+  <div class="container">
+    <h1>좌표 그래프 계산기</h1>
 
-    <!-- 그래프 -->
-    <div class="card">
-      <h2>그래프</h2>
-      <div id="blank" class="empty">좌표를 입력하고 [값 표시하기]를 누르세요</div>
-      <svg id="svg" class="svg" width="600" height="400" style="display:none"></svg>
-      <div class="legend">
-        <div class="row"><span class="dot" style="background:#2563eb"></span>점</div>
-        <div class="row"><span class="line" style="background:#dc2626"></span>추세선</div>
-        <div class="row"><span class="dot" style="background:#16a34a"></span>예측</div>
+    <div class="grid">
+      <!-- 입력 섹션 -->
+      <div class="input-section">
+        <div>
+          <div class="section-header">
+            <h2>좌표 입력</h2>
+            <button class="btn btn-purple" onclick="loadSampleData()"><span>📊</span><span>예시 데이터</span></button>
+          </div>
+
+          <div id="pointsContainer"><!-- 동적 입력 필드 --></div>
+
+          <button class="btn btn-blue" onclick="addPoint()"><span>➕</span><span>좌표 추가</span></button>
+        </div>
+
+        <!-- 컨트롤 버튼 -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <button id="showPointsBtn" class="btn btn-gray btn-full" onclick="toggleShowPoints()">값 표시하기</button>
+          <button id="showTrendLineBtn" class="btn btn-disabled btn-full" onclick="toggleTrendLine()" disabled>그래프 그리기</button>
+          <button id="predictModeBtn" class="btn btn-disabled btn-full" onclick="togglePredictMode()" disabled>원하는 값 구하기</button>
+        </div>
+
+        <!-- 예측 입력 -->
+        <div id="predictSection" class="predict-section hidden">
+          <h3 style="font-weight:700;margin-bottom:12px;">값 예측</h3>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="predictType" value="x" checked> X 값으로 Y 구하기</label>
+            <label class="radio-item"><input type="radio" name="predictType" value="y"> Y 값으로 X 구하기</label>
+          </div>
+          <div class="predict-input-group">
+            <input type="number" id="predictInput" class="predict-input" placeholder="값 입력" />
+            <button class="btn btn-green" onclick="handlePredict()">계산</button>
+          </div>
+          <div id="predictResult" class="result-box hidden"></div>
+        </div>
+      </div>
+
+      <!-- 그래프 섹션 -->
+      <div class="graph-section">
+        <h2 style="margin-bottom:1rem;">그래프</h2>
+        <div class="graph-container">
+          <div id="emptyGraph" class="empty-graph">
+            <div>
+              <p style="font-size:1.125rem;margin-bottom:8px;">좌표를 입력하고</p>
+              <p style="font-size:1.125rem;">[값 표시하기] 버튼을 클릭하세요</p>
+            </div>
+          </div>
+          <svg id="graph" class="svg-graph hidden" width="600" height="450"></svg>
+        </div>
+
+        <!-- 범례 -->
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div><span>입력된 점</span></div>
+          <div class="legend-item"><div class="legend-line" style="background:var(--red);"></div><span>추세선</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div><span>예측 점</span></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 <script>
-let points=[{id:1,x:'',y:''}], show=false, line=false, pred=null;
+  // ===== 상태 =====
+  let points = [
+    { id:1, x:'', y:'' },
+    { id:2, x:'', y:'' },
+    { id:3, x:'', y:'' },
+    { id:4, x:'', y:'' },
+    { id:5, x:'', y:'' }
+  ];
+  let showPoints=false, showTrendLine=false, predictMode=false, predictResult=null;
 
-document.addEventListener('DOMContentLoaded',()=>render());
+  document.addEventListener('DOMContentLoaded', renderPointInputs);
 
-function render(){
-  const box=document.getElementById('rows'); box.innerHTML='';
-  points.forEach(p=>{
-    box.innerHTML+=`
-      <div class="row">
-        #${p.id}
-        <input type="number" value="${p.x}" placeholder="x" oninput="upd(${p.id},'x',this.value)">
-        <input type="number" value="${p.y}" placeholder="y" oninput="upd(${p.id},'y',this.value)">
-        ${points.length>1?`<button class="trash" onclick="del(${p.id})">🗑️</button>`:''}
-      </div>`;
-  });
-  draw();
-}
+  // ===== 입력 렌더 =====
+  function renderPointInputs(){
+    const container=document.getElementById('pointsContainer');
+    container.innerHTML='';
+    points.forEach(p=>{
+      const row=document.createElement('div');
+      row.className='point-input';
+      row.innerHTML = `
+        <span class="point-number">#${p.id}</span>
+        <input type="number" placeholder="x" value="${p.x}" onchange="updatePoint(${p.id},'x',this.value)">
+        <span>,</span>
+        <input type="number" placeholder="y" value="${p.y}" onchange="updatePoint(${p.id},'y',this.value)">
+        ${points.length>1?`<button class="delete-btn" onclick="removePoint(${p.id})">🗑️</button>`:''}
+      `;
+      container.appendChild(row);
+    });
+  }
 
-function addRow(){points.push({id:points.length+1,x:'',y:''});render();}
-function del(id){points=points.filter(p=>p.id!==id);render();}
-function upd(id,k,v){const p=points.find(p=>p.id===id);p[k]=v;draw();}
-function valid(){return points.filter(p=>p.x&&p.y).map(p=>({x:+p.x,y:+p.y}));}
+  function addPoint(){
+    const newId = points.length ? Math.max(...points.map(p=>p.id))+1 : 1;
+    points.push({id:newId,x:'',y:''});
+    renderPointInputs();
+  }
+  function removePoint(id){
+    if(points.length<=1) return;
+    points = points.filter(p=>p.id!==id);
+    renderPointInputs(); updateGraph();
+  }
+  function updatePoint(id,key,val){
+    const pt = points.find(p=>p.id===id);
+    if(pt){ pt[key]=val; updateGraph(); }
+  }
 
-function togglePoints(){show=!show;if(!show){line=false;pred=null;}draw();}
-function toggleLine(){if(valid().length<2)return alert("점이 2개 이상 필요");line=!line;if(line)show=true;draw();}
-function togglePredict(){if(valid().length<2)return alert("점이 2개 이상 필요");const b=document.getElementById('predictBox');b.style.display=(b.style.display==='none')?'block':'none';}
-function predict(){
-  const pts=valid(),t=trend(pts);if(!t)return;
-  const x=+document.getElementById('predictX').value;
-  const y=t.a*x+t.b; pred={x,y};
-  document.getElementById('predictResult').textContent=`예측: (${x}, ${y.toFixed(1)})`;
-  draw();
-}
+  // ===== 유틸 =====
+  const getValidPoints = () =>
+    points.filter(p=>p.x!==''&&p.y!==''&&!isNaN(p.x)&&!isNaN(p.y))
+          .map(p=>({x:parseFloat(p.x), y:parseFloat(p.y)}));
 
-function trend(pts){const n=pts.length,sx=pts.reduce((s,p)=>s+p.x,0),sy=pts.reduce((s,p)=>s+p.y,0),sxx=pts.reduce((s,p)=>s+p.x*p.x,0),sxy=pts.reduce((s,p)=>s+p.x*p.y,0);const d=n*sxx-sx*sx;if(!d)return null;const a=(n*sxy-sx*sy)/d,b=(sy-a*sx)/n;return{a,b};}
+  function calculateTrendLine(pts){
+    if(pts.length<2) return null;
+    const n=pts.length,
+          sx=pts.reduce((s,p)=>s+p.x,0),
+          sy=pts.reduce((s,p)=>s+p.y,0),
+          sxx=pts.reduce((s,p)=>s+p.x*p.x,0),
+          sxy=pts.reduce((s,p)=>s+p.x*p.y,0);
+    const denom = n*sxx - sx*sx;
+    if(Math.abs(denom)<1e-9) return null;
+    const slope=(n*sxy - sx*sy)/denom;
+    const intercept=(sy - slope*sx)/n;
+    return {slope,intercept};
+  }
 
-function draw(){
-  const pts=valid(),svg=document.getElementById('svg'),blank=document.getElementById('blank');
-  if(!show||pts.length===0){svg.style.display='none';blank.style.display='flex';return;}
-  svg.style.display='block';blank.style.display='none';svg.innerHTML='';
-  const W=600,H=400,P=50;
-  let xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
-  if(pred){xs.push(pred.x);ys.push(pred.y);}
-  let minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
-  const toX=x=>P+(x-minX)/(maxX-minX||1)*(W-2*P);
-  const toY=y=>H-P-(y-minY)/(maxY-minY||1)*(H-2*P);
-  // 축
-  lineEl(P,P,P,H-P,'#333',2); lineEl(P,H-P,W-P,H-P,'#333',2);
-  // 추세선
-  if(line&&pts.length>=2){const t=trend(pts);if(t){const y1=t.a*minX+t.b,y2=t.a*maxX+t.b;lineEl(toX(minX),toY(y1),toX(maxX),toY(y2),'#dc2626',2);}}
-  // 점
-  pts.forEach(p=>{circleEl(toX(p.x),toY(p.y),6,'#2563eb');});
-  // 예측
-  if(pred){circleEl(toX(pred.x),toY(pred.y),7,'#16a34a');}
-  function lineEl(x1,y1,x2,y2,c,w){const e=document.createElementNS('http://www.w3.org/2000/svg','line');e.setAttribute('x1',x1);e.setAttribute('y1',y1);e.setAttribute('x2',x2);e.setAttribute('y2',y2);e.setAttribute('stroke',c);e.setAttribute('stroke-width',w);svg.appendChild(e);}
-  function circleEl(cx,cy,r,f){const e=document.createElementNS('http://www.w3.org/2000/svg','circle');e.setAttribute('cx',cx);e.setAttribute('cy',cy);e.setAttribute('r',r);e.setAttribute('fill',f);svg.appendChild(e);}
-}
+  // ===== 버튼 상태 =====
+  function updateButtons(){
+    const btnShow=document.getElementById('showPointsBtn');
+    const btnLine=document.getElementById('showTrendLineBtn');
+    const btnPred=document.getElementById('predictModeBtn');
+
+    btnShow.className = 'btn '+(showPoints?'btn-primary':'btn-gray')+' btn-full';
+
+    if(!showPoints){
+      btnLine.className='btn btn-disabled btn-full'; btnLine.disabled=true;
+      btnPred.className='btn btn-disabled btn-full'; btnPred.disabled=true;
+    }else{
+      btnLine.disabled=false;
+      btnLine.className = 'btn '+(showTrendLine?'btn-red':'btn-gray')+' btn-full';
+      btnPred.disabled=false;
+      btnPred.className = 'btn '+(predictMode?'btn-green':'btn-gray')+' btn-full';
+    }
+  }
+
+  // ===== 토글 =====
+  function toggleShowPoints(){
+    showPoints=!showPoints;
+    if(!showPoints){ showTrendLine=false; predictResult=null; }
+    updateButtons(); updateGraph();
+  }
+  function toggleTrendLine(){
+    const pts=getValidPoints();
+    if(pts.length<2) return alert('추세선을 그리려면 최소 2개의 유효한 점이 필요합니다.');
+    showTrendLine=!showTrendLine;
+    if(showTrendLine) showPoints=true;
+    updateButtons(); updateGraph();
+  }
+  function togglePredictMode(){
+    const pts=getValidPoints();
+    if(pts.length<2) return alert('값을 예측하려면 최소 2개의 유효한 점이 필요합니다.');
+    predictMode=!predictMode; predictResult=null;
+    const sec=document.getElementById('predictSection');
+    const res=document.getElementById('predictResult');
+    sec.classList.toggle('hidden', !predictMode);
+    res.classList.add('hidden');
+    updateButtons(); updateGraph();
+  }
+
+  // ===== 예측 =====
+  function handlePredict(){
+    const pts=getValidPoints();
+    if(pts.length<2) return alert('추세선을 그리려면 최소 2개의 유효한 점이 필요합니다.');
+    const v=parseFloat(document.getElementById('predictInput').value);
+    if(isNaN(v)) return alert('유효한 숫자를 입력해주세요.');
+    const tl=calculateTrendLine(pts); if(!tl) return;
+    const type=document.querySelector('input[name="predictType"]:checked').value;
+    predictResult = (type==='x')
+      ? {x:v, y: tl.slope*v + tl.intercept}
+      : {x: (v - tl.intercept)/tl.slope, y: v};
+    showTrendLine=true;
+    const res=document.getElementById('predictResult');
+    const label = (type==='x') ? 'Y' : 'X';
+    const value = (type==='x') ? predictResult.y.toFixed(2) : predictResult.x.toFixed(2);
+    res.textContent = `예측 결과: ${label} = ${value}`;
+    res.classList.remove('hidden');
+    updateButtons(); updateGraph();
+  }
+
+  // ===== 샘플 =====
+  function loadSampleData(){
+    const sets=[
+      [{id:1,x:'1',y:'2'},{id:2,x:'2',y:'4'},{id:3,x:'3',y:'6'},{id:4,x:'4',y:'8'},{id:5,x:'5',y:'10'}],
+      [{id:1,x:'1',y:'1'},{id:2,x:'2',y:'4'},{id:3,x:'3',y:'9'},{id:4,x:'4',y:'16'},{id:5,x:'5',y:'25'}],
+      [{id:1,x:'20',y:'50'},{id:2,x:'25',y:'80'},{id:3,x:'30',y:'120'},{id:4,x:'35',y:'150'},{id:5,x:'40',y:'200'}]
+    ];
+    points = sets[Math.floor(Math.random()*sets.length)];
+    renderPointInputs();
+    showPoints=true; predictMode=false; predictResult=null;
+    updateButtons(); updateGraph();
+  }
+
+  // ===== 그래프 =====
+  function updateGraph(){
+    const pts=getValidPoints();
+    const empty=document.getElementById('emptyGraph');
+    const svg=document.getElementById('graph');
+
+    if(!showPoints || pts.length===0){
+      empty.classList.remove('hidden'); svg.classList.add('hidden'); return;
+    }
+    empty.classList.add('hidden'); svg.classList.remove('hidden');
+    renderGraph(pts);
+  }
+
+  function renderGraph(pts){
+    const svg=document.getElementById('graph');
+    const W=600, H=450, P=60;
+    svg.innerHTML='';
+
+    // 범위
+    let xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
+    if(predictResult){ xs.push(predictResult.x); ys.push(predictResult.y); }
+    let minX=Math.min(...xs), maxX=Math.max(...xs),
+        minY=Math.min(...ys), maxY=Math.max(...ys);
+    const xR=maxX-minX||10, yR=maxY-minY||10;
+    const xPad=xR*0.1, yPad=yR*0.1;
+    minX-=xPad; maxX+=xPad; minY-=yPad; maxY+=yPad;
+    const toX=x=>P + (x-minX)/(maxX-minX)*(W-2*P);
+    const toY=y=>H-P - (y-minY)/(maxY-minY)*(H-2*P);
+
+    // 격자 & 축
+    for(let i=0;i<=10;i++){
+      const gx=P + i/10*(W-2*P);
+      const gy=P + i/10*(H-2*P);
+      line(gx,P,gx,H-P,'#e5e5e5',1);
+      line(P,gy,W-P,gy,'#e5e5e5',1);
+    }
+    line(P,P,P,H-P,'#333',2); line(P,H-P,W-P,H-P,'#333',2);
+
+    // 눈금 라벨
+    for(let i=0;i<=5;i++){
+      const vx=minX + i/5*(maxX-minX);
+      text(toX(vx), H-P+24, vx.toFixed(1), 'middle', 12, '#666');
+      const vy=minY + i/5*(maxY-minY);
+      text(P-15, toY(vy)+4, vy.toFixed(1), 'end', 12, '#666');
+    }
+    text(W/2, H-12, 'X(기온)', 'middle', 14, '#111', true);
+    text(18,   H/2, 'Y(전력량)', 'middle', 14, '#111', true, -90);
+
+    // 추세선
+    if(showTrendLine && pts.length>=2){
+      const tl=calculateTrendLine(pts);
+      if(tl){
+        const y1=tl.slope*minX+tl.intercept, y2=tl.slope*maxX+tl.intercept;
+        line(toX(minX),toY(y1),toX(maxX),toY(y2), 'var(--red)', 2);
+        text(P+10, P+22, `y = ${tl.slope.toFixed(2)}x + ${tl.intercept.toFixed(2)}`, 'start', 13, 'var(--red)', true);
+      }
+    }
+
+    // 점
+    pts.forEach(p=>{
+      circle(toX(p.x),toY(p.y),6,'var(--blue)');
+      text(toX(p.x),toY(p.y)-12, `(${p.x}, ${p.y})`, 'middle', 10, '#333', true);
+    });
+
+    // 예측 점
+    if(predictResult){
+      circle(toX(predictResult.x),toY(predictResult.y),8,'var(--green)');
+      text(toX(predictResult.x),toY(predictResult.y)-15, `예측: (${predictResult.x}, ${predictResult.y.toFixed(2)})`, 'middle', 12, 'var(--green)', true);
+    }
+
+    // SVG helpers
+    function line(x1,y1,x2,y2,stroke,w){
+      const el=document.createElementNS('http://www.w3.org/2000/svg','line');
+      el.setAttribute('x1',x1); el.setAttribute('y1',y1);
+      el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+      el.setAttribute('stroke',stroke); el.setAttribute('stroke-width',w);
+      svg.appendChild(el);
+    }
+    function text(x,y,t,anchor,size,color,bold=false,rot=0){
+      const el=document.createElementNS('http://www.w3.org/2000/svg','text');
+      el.setAttribute('x',x); el.setAttribute('y',y);
+      el.setAttribute('text-anchor',anchor);
+      el.setAttribute('font-size',size); el.setAttribute('fill',color);
+      if(bold) el.setAttribute('font-weight','700');
+      if(rot) el.setAttribute('transform',`rotate(${rot} ${x} ${y})`);
+      el.textContent=t; svg.appendChild(el);
+    }
+    function circle(cx,cy,r,fill){
+      const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      el.setAttribute('cx',cx); el.setAttribute('cy',cy);
+      el.setAttribute('r',r); el.setAttribute('fill',fill);
+      svg.appendChild(el);
+    }
+  }
 </script>
 </body>
 </html>
