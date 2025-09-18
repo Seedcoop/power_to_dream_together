@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국전력기술원 미래과학교실 Power to Dream Together</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+            background: white;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: #1f2937;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-purple {
+            background-color: #e9d5ff;
+            color: #7c3aed;
+        }
+
+        .btn-purple:hover {
+            background-color: #ddd6fe;
+        }
+
+        .btn-blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .btn-blue:hover {
+            background-color: #bfdbfe;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-red {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-red:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-green {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-green:hover {
+            background-color: #15803d;
+        }
+
+        .btn-gray {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-gray:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-disabled {
+            background-color: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .point-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .point-number {
+            width: 32px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 4px 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 1px #2563eb;
+        }
+
+        .delete-btn {
+            padding: 4px;
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            background-color: #fef2f2;
+        }
+
+        .predict-section {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .predict-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .predict-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+        }
+
+        .result-box {
+            padding: 12px;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 4px;
+            color: #15803d;
+            margin-top: 0.5rem;
+        }
+
+        .graph-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .graph-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .empty-graph {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 600px;
+            height: 450px;
+            background-color: #f9fafb;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .legend-line {
+            width: 16px;
+            height: 4px;
+        }
+
+        .svg-graph {
+            max-width: 600px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>좌표 그래프 계산기</h1>
+        
+        <div class="grid">
+            <!-- 입력 섹션 -->
+            <div class="input-section">
+                <div>
+                    <div class="section-header">
+                        <h2>좌표 입력</h2>
+                        <button class="btn btn-purple" onclick="loadSampleData()">
+                            <span>📊</span>
+                            <span>예시 데이터</span>
+                        </button>
+                    </div>
+                    <div id="pointsContainer">
+                        <!-- 포인트 입력 필드들이 여기에 동적으로 생성됩니다 -->
+                    </div>
+                    
+                    <button class="btn btn-blue" onclick="addPoint()">
+                        <span>➕</span>
+                        <span>좌표 추가</span>
+                    </button>
+                </div>
+                
+                <!-- 컨트롤 버튼들 -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button id="showPointsBtn" class="btn btn-gray btn-full" onclick="toggleShowPoints()">
+                        값 표시하기
+                    </button>
+                    
+                    <button id="showTrendLineBtn" class="btn btn-disabled btn-full" onclick="toggleTrendLine()" disabled>
+                        그래프 그리기
+                    </button>
+                    
+                    <button id="predictModeBtn" class="btn btn-disabled btn-full" onclick="togglePredictMode()" disabled>
+                        원하는 값 구하기
+                    </button>
+                </div>
+                
+                <!-- 예측 입력 -->
+                <div id="predictSection" class="predict-section hidden">
+                    <h3 style="font-weight: 500; margin-bottom: 12px;">값 예측</h3>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="predictType" value="x" checked>
+                            X 값으로 Y 구하기
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="predictType" value="y">
+                            Y 값으로 X 구하기
+                        </label>
+                    </div>
+                    
+                    <div class="predict-input-group">
+                        <input type="number" id="predictInput" class="predict-input" placeholder="값 입력">
+                        <button class="btn btn-green" onclick="handlePredict()">계산</button>
+                    </div>
+                    
+                    <div id="predictResult" class="result-box hidden">
+                        <!-- 예측 결과가 여기에 표시됩니다 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 그래프 섹션 -->
+            <div class="graph-section">
+                <h2 style="margin-bottom: 1rem;">그래프</h2>
+                <div class="graph-container">
+                    <div id="emptyGraph" class="empty-graph">
+                        <div>
+                            <p style="font-size: 1.125rem; margin-bottom: 8px;">좌표를 입력하고</p>
+                            <p style="font-size: 1.125rem;">[값 표시하기] 버튼을 클릭하세요</p>
+                        </div>
+                    </div>
+                    <svg id="graph" class="svg-graph hidden" width="600" height="450">
+                        <!-- 그래프가 여기에 그려집니다 -->
+                    </svg>
+                </div>
+                
+                <!-- 범례 -->
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background-color: #2563eb;"></div>
+                        <span>입력된 점</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-line" style="background-color: #dc2626;"></div>
+                        <span>추세선</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background-color: #16a34a;"></div>
+                        <span>예측 점</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 전역 변수들
+        let points = [
+            { id: 1, x: '', y: '' },
+            { id: 2, x: '', y: '' },
+            { id: 3, x: '', y: '' },
+            { id: 4, x: '', y: '' },
+            { id: 5, x: '', y: '' }
+        ];
+        let showPoints = false;
+        let showTrendLine = false;
+        let predictMode = false;
+        let predictResult = null;
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPointInputs();
+        });
+
+        // 포인트 입력 필드 렌더링
+        function renderPointInputs() {
+            const container = document.getElementById('pointsContainer');
+            container.innerHTML = '';
+            
+            points.forEach(point => {
+                const div = document.createElement('div');
+                div.className = 'point-input';
+                div.innerHTML = `
+                    <span class="point-number">#${point.id}</span>
+                    <input type="number" placeholder="x" value="${point.x}" 
+                           onchange="updatePoint(${point.id}, 'x', this.value)">
+                    <span>,</span>
+                    <input type="number" placeholder="y" value="${point.y}" 
+                           onchange="updatePoint(${point.id}, 'y', this.value)">
+                    ${points.length > 1 ? `<button class="delete-btn" onclick="removePoint(${point.id})">🗑️</button>` : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // 포인트 추가
+        function addPoint() {
+            const newId = Math.max(...points.map(p => p.id)) + 1;
+            points.push({ id: newId, x: '', y: '' });
+            renderPointInputs();
+        }
+
+        // 포인트 제거
+        function removePoint(id) {
+            if (points.length > 1) {
+                points = points.filter(p => p.id !== id);
+                renderPointInputs();
+                updateGraph();
+            }
+        }
+
+        // 포인트 값 업데이트
+        function updatePoint(id, field, value) {
+            const point = points.find(p => p.id === id);
+            if (point) {
+                point[field] = value;
+                updateGraph();
+            }
+        }
+
+        // 예시 데이터 로드
+        function loadSampleData() {
+            const sampleDataSets = [
+                [
+                    { id: 1, x: '1', y: '2' },
+                    { id: 2, x: '2', y: '4' },
+                    { id: 3, x: '3', y: '6' },
+                    { id: 4, x: '4', y: '8' },
+                    { id: 5, x: '5', y: '10' }
+                ],
+                [
+                    { id: 1, x: '1', y: '1' },
+                    { id: 2, x: '2', y: '4' },
+                    { id: 3, x: '3', y: '9' },
+                    { id: 4, x: '4', y: '16' },
+                    { id: 5, x: '5', y: '25' }
+                ],
+                [
+                    { id: 1, x: '20', y: '50' },
+                    { id: 2, x: '25', y: '80' },
+                    { id: 3, x: '30', y: '120' },
+                    { id: 4, x: '35', y: '150' },
+                    { id: 5, x: '40', y: '200' }
+                ]
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * sampleDataSets.length);
+            points = sampleDataSets[randomIndex];
+            renderPointInputs();
+            
+            showPoints = true;
+            predictMode = false;
+            predictResult = null;
+            updateButtons();
+            updateGraph();
+        }
+
+        // 유효한 포인트들 가져오기
+        function getValidPoints() {
+            return points
+                .filter(p => p.x !== '' && p.y !== '' && !isNaN(p.x) && !isNaN(p.y))
+                .map(p => ({ x: parseFloat(p.x), y: parseFloat(p.y) }));
+        }
+
+        // 추세선 계산
+        function calculateTrendLine(validPoints) {
+            if (validPoints.length < 2) return null;
+            
+            const n = validPoints.length;
+            const sumX = validPoints.reduce((sum, p) => sum + p.x, 0);
+            const sumY = validPoints.reduce((sum, p) => sum + p.y, 0);
+            const sumXY = validPoints.reduce((sum, p) => sum + p.x * p.y, 0);
+            const sumXX = validPoints.reduce((sum, p) => sum + p.x * p.x, 0);
+            
+            const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+            
+            return { slope, intercept };
+        }
+
+        // 버튼 상태 업데이트
+        function updateButtons() {
+            const showPointsBtn = document.getElementById('showPointsBtn');
+            const showTrendLineBtn = document.getElementById('showTrendLineBtn');
+            const predictModeBtn = document.getElementById('predictModeBtn');
+            
+            // 값 표시하기 버튼
+            if (showPoints) {
+                showPointsBtn.className = 'btn btn-primary btn-full';
+            } else {
+                showPointsBtn.className = 'btn btn-gray btn-full';
+            }
+            
+            // 그래프 그리기 버튼
+            if (!showPoints) {
+                showTrendLineBtn.className = 'btn btn-disabled btn-full';
+                showTrendLineBtn.disabled = true;
+            } else {
+                if (showTrendLine) {
+                    showTrendLineBtn.className = 'btn btn-red btn-full';
+                } else {
+                    showTrendLineBtn.className = 'btn btn-gray btn-full';
+                }
+                showTrendLineBtn.disabled = false;
+            }
+            
+            // 원하는 값 구하기 버튼
+            if (!showPoints) {
+                predictModeBtn.className = 'btn btn-disabled btn-full';
+                predictModeBtn.disabled = true;
+            } else {
+                if (predictMode) {
+                    predictModeBtn.className = 'btn btn-green btn-full';
+                } else {
+                    predictModeBtn.className = 'btn btn-gray btn-full';
+                }
+                predictModeBtn.disabled = false;
+            }
+        }
+
+        // 값 표시하기 토글
+        function toggleShowPoints() {
+            showPoints = !showPoints;
+            if (!showPoints) {
+                showTrendLine = false;
+                predictResult = null;
+            }
+            updateButtons();
+            updateGraph();
+        }
+
+        // 추세선 토글
+        function toggleTrendLine() {
+            const validPoints = getValidPoints();
+            if (validPoints.length < 2) {
+                alert('추세선을 그리려면 최소 2개의 유효한 점이 필요합니다.');
+                return;
+            }
+            showTrendLine = !showTrendLine;
+            if (showTrendLine) {
+                showPoints = true;
+            }
+            updateButtons();
+            updateGraph();
+        }
+
+        // 예측 모드 토글
+        function togglePredictMode() {
+            const validPoints = getValidPoints();
+            if (validPoints.length < 2) {
+                alert('값을 예측하려면 최소 2개의 유효한 점이 필요합니다.');
+                return;
+            }
+            predictMode = !predictMode;
+            predictResult = null;
+            
+            const predictSection = document.getElementById('predictSection');
+            const predictResultDiv = document.getElementById('predictResult');
+            
+            if (predictMode) {
+                predictSection.classList.remove('hidden');
+            } else {
+                predictSection.classList.add('hidden');
+            }
+            predictResultDiv.classList.add('hidden');
+            
+            updateButtons();
+            updateGraph();
+        }
+
+        // 예측 처리
+        function handlePredict() {
+            const validPoints = getValidPoints();
+            if (validPoints.length < 2) {
+                alert('추세선을 그리려면 최소 2개의 유효한 점이 필요합니다.');
+                return;
+            }
+            
+            const predictInput = document.getElementById('predictInput');
+            const inputValue = parseFloat(predictInput.value);
+            if (isNaN(inputValue)) {
+                alert('유효한 숫자를 입력해주세요.');
+                return;
+            }
+            
+            const predictType = document.querySelector('input[name="predictType"]:checked').value;
+            const trendLine = calculateTrendLine(validPoints);
+            if (!trendLine) return;
+            
+            let result;
+            if (predictType === 'x') {
+                const y = trendLine.slope * inputValue + trendLine.intercept;
+                result = { x: inputValue, y };
+            } else {
+                const x = (inputValue - trendLine.intercept) / trendLine.slope;
+                result = { x, y: inputValue };
+            }
+            
+            predictResult = result;
+            showTrendLine = true;
+            
+            // 결과 표시
+            const predictResultDiv = document.getElementById('predictResult');
+            const resultValue = predictType === 'x' ? result.y.toFixed(2) : result.x.toFixed(2);
+            const resultLabel = predictType === 'x' ? 'Y' : 'X';
+            
+            predictResultDiv.innerHTML = `예측 결과: ${resultLabel} = ${resultValue}`;
+            predictResultDiv.classList.remove('hidden');
+            
+            updateButtons();
+            updateGraph();
+        }
+
+        // 그래프 업데이트
+        function updateGraph() {
+            const validPoints = getValidPoints();
+            const emptyGraph = document.getElementById('emptyGraph');
+            const graph = document.getElementById('graph');
+            
+            if (validPoints.length === 0 || !showPoints) {
+                emptyGraph.classList.remove('hidden');
+                graph.classList.add('hidden');
+                return;
+            }
+            
+            emptyGraph.classList.add('hidden');
+            graph.classList.remove('hidden');
+            
+            renderGraph(validPoints);
+        }
+
+        // SVG 그래프 렌더링
+        function renderGraph(validPoints) {
+            const graph = document.getElementById('graph');
+            
+            // 좌표 범위 계산
+            const xValues = validPoints.map(p => p.x);
+            const yValues = validPoints.map(p => p.y);
+            let minX = Math.min(...xValues);
+            let maxX = Math.max(...xValues);
+            let minY = Math.min(...yValues);
+            let maxY = Math.max(...yValues);
+            
+            // 예측 결과가 있으면 범위에 포함
+            if (predictResult) {
+                minX = Math.min(minX, predictResult.x);
+                maxX = Math.max(maxX, predictResult.x);
+                minY = Math.min(minY, predictResult.y);
+                maxY = Math.max(maxY, predictResult.y);
+            }
+            
+            // 범위에 여백 추가
+            const xRange = maxX - minX || 10;
+            const yRange = maxY - minY || 10;
+            const xPadding = xRange * 0.1;
+            const yPadding = yRange * 0.1;
+            
+            minX -= xPadding;
+            maxX += xPadding;
+            minY -= yPadding;
+            maxY += yPadding;
+            
+            const width = 600;
+            const height = 450;
+            const padding = 60;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+            
+            // 좌표 변환 함수
+            const toSvgX = (x) => padding + ((x - minX) / (maxX - minX)) * graphWidth;
+            const toSvgY = (y) => height - padding - ((y - minY) / (maxY - minY)) * graphHeight;
+            
+            // SVG 내용 초기화
+            graph.innerHTML = '';
+            
+            // 격자선 그리기
+            const numGridLines = 10;
+            for (let i = 0; i <= numGridLines; i++) {
+                // 세로 격자선
+                const x = padding + (i / numGridLines) * graphWidth;
+                const vLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                vLine.setAttribute('x1', x);
+                vLine.setAttribute('y1', padding);
+                vLine.setAttribute('x2', x);
+                vLine.setAttribute('y2', height - padding);
+                vLine.setAttribute('stroke', '#e5e5e5');
+                vLine.setAttribute('stroke-width', '1');
+                graph.appendChild(vLine);
+                
+                // 가로 격자선
+                const y = padding + (i / numGridLines) * graphHeight;
+                const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                hLine.setAttribute('x1', padding);
+                hLine.setAttribute('y1', y);
+                hLine.setAttribute('x2', width - padding);
+                hLine.setAttribute('y2', y);
+                hLine.setAttribute('stroke', '#e5e5e5');
+                hLine.setAttribute('stroke-width', '1');
+                graph.appendChild(hLine);
+            }
+            
+            // 축 그리기
+            const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            yAxis.setAttribute('x1', padding);
+            yAxis.setAttribute('y1', padding);
+            yAxis.setAttribute('x2', padding);
+            yAxis.setAttribute('y2', height - padding);
+            yAxis.setAttribute('stroke', '#333');
+            yAxis.setAttribute('stroke-width', '2');
+            graph.appendChild(yAxis);
+            
+            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            xAxis.setAttribute('x1', padding);
+            xAxis.setAttribute('y1', height - padding);
+            xAxis.setAttribute('x2', width - padding);
+            xAxis.setAttribute('y2', height - padding);
+            xAxis.setAttribute('stroke', '#333');
+            xAxis.setAttribute('stroke-width', '2');
+            graph.appendChild(xAxis);
+            
+            // 축 레이블
+            for (let i = 0; i <= 5; i++) {
+                // X축 레이블
+                const x = padding + (i / 5) * graphWidth;
+                const value = minX + (i / 5) * (maxX - minX);
+                const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                xLabel.setAttribute('x', x);
+                xLabel.setAttribute('y', height - padding + 25);
+                xLabel.setAttribute('text-anchor', 'middle');
+                xLabel.setAttribute('font-size', '12');
+                xLabel.setAttribute('fill', '#666');
+                xLabel.textContent = value.toFixed(1);
+                graph.appendChild(xLabel);
+                
+                // Y축 레이블
+                const y = height - padding - (i / 5) * graphHeight;
+                const yValue = minY + (i / 5) * (maxY - minY);
+                const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                yLabel.setAttribute('x', padding - 15);
+                yLabel.setAttribute('y', y + 4);
+                yLabel.setAttribute('text-anchor', 'end');
+                yLabel.setAttribute('font-size', '12');
+                yLabel.setAttribute('fill', '#666');
+                yLabel.textContent = yValue.toFixed(1);
+                graph.appendChild(yLabel);
+            }
+            
+            // 축 제목
+            const xTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            xTitle.setAttribute('x', width / 2);
+            xTitle.setAttribute('y', height - 10);
+            xTitle.setAttribute('text-anchor', 'middle');
+            xTitle.setAttribute('font-size', '14');
+            xTitle.setAttribute('fill', '#333');
+            xTitle.setAttribute('font-weight', 'bold');
+            xTitle.textContent = 'X(기온)';
+            graph.appendChild(xTitle);
+            
+            const yTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yTitle.setAttribute('x', 15);
+            yTitle.setAttribute('y', height / 2);
+            yTitle.setAttribute('text-anchor', 'middle');
+            yTitle.setAttribute('font-size', '14');
+            yTitle.setAttribute('fill', '#333');
+            yTitle.setAttribute('font-weight', 'bold');
+            yTitle.setAttribute('transform', `rotate(-90 15 ${height / 2})`);
+            yTitle.textContent = 'Y(전력량)';
+            graph.appendChild(yTitle);
+            
+            // 추세선 그리기
+            if (showTrendLine && validPoints.length >= 2) {
+                const trendLine = calculateTrendLine(validPoints);
+                if (trendLine) {
+                    const startX = minX;
+                    const endX = maxX;
+                    const startY = trendLine.slope * startX + trendLine.intercept;
+                    const endY = trendLine.slope * endX + trendLine.intercept;
+                    
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', toSvgX(startX));
+                    line.setAttribute('y1', toSvgY(startY));
+                    line.setAttribute('x2', toSvgX(endX));
+                    line.setAttribute('y2', toSvgY(endY));
+                    line.setAttribute('stroke', '#dc2626');
+                    line.setAttribute('stroke-width', '2');
+                    graph.appendChild(line);
+                    
+                    // 방정식 표시
+                    const equation = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    equation.setAttribute('x', padding + 10);
+                    equation.setAttribute('y', padding + 20);
+                    equation.setAttribute('font-size', '14');
+                    equation.setAttribute('fill', '#dc2626');
+                    equation.setAttribute('font-weight', 'bold');
+                    equation.textContent = `y = ${trendLine.slope.toFixed(2)}x + ${trendLine.intercept.toFixed(2)}`;
+                    graph.appendChild(equation);
+                }
+            }
+            
+            // 데이터 포인트 그리기
+            if (showPoints) {
+                validPoints.forEach((point, index) => {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', toSvgX(point.x));
+                    circle.setAttribute('cy', toSvgY(point.y));
+                    circle.setAttribute('r', '6');
+                    circle.setAttribute('fill', '#2563eb');
+                    graph.appendChild(circle);
+                    
+                    // 포인트 레이블
+                    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    label.setAttribute('x', toSvgX(point.x));
+                    label.setAttribute('y', toSvgY(point.y) - 12);
+                    label.setAttribute('text-anchor', 'middle');
+                    label.setAttribute('font-size', '10');
+                    label.setAttribute('fill', '#333');
+                    label.setAttribute('font-weight', 'bold');
+                    label.textContent = `(${point.x}, ${point.y})`;
+                    graph.appendChild(label);
+                });
+            }
+            
+            // 예측 점 그리기
+            if (predictResult) {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', toSvgX(predictResult.x));
+                circle.setAttribute('cy', toSvgY(predictResult.y));
+                circle.setAttribute('r', '8');
+                circle.setAttribute('fill', '#16a34a');
+                graph.appendChild(circle);
+                
+                // 예측 점 레이블
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', toSvgX(predictResult.x));
+                label.setAttribute('y', toSvgY(predictResult.y) - 15);
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('font-size', '12');
+                label.setAttribute('fill', '#16a34a');
+                label.setAttribute('font-weight', 'bold');
+                label.textContent = `예측: (${predictResult.x}, ${predictResult.y.toFixed(2)})`;
+                graph.appendChild(label);
+            }
+        }
+    </script>
+</body>
+</html>
